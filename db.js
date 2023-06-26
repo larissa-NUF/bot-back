@@ -75,7 +75,6 @@ module.exports = {
       await client.connect();
       const db = client.db(dbName);
       const col = db.collection("video");
-      console.log(id)
       await col.deleteOne({ _id: new ObjectId(id) });
       await client.close();
     } catch (err) {
