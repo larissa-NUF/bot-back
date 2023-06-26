@@ -5,6 +5,8 @@ const server = require('http').createServer(app)
 const io = require('socket.io')(server, {cors: {origin: '*'}})
 const db = require('./db');
 const validacao = require('./validacao');
+const dotenv = require('dotenv');
+dotenv.config();
 
 const PORT = process.env.PORT || 3001;
 
@@ -25,9 +27,9 @@ const client = new tmi.Client({
 	options: { debug: true },
 	identity: {
 		username: 'aumcebot',
-		password: 'oauth:nj09nzwbp52o2byahrbk2x9cn3mtal'
+		password: process.env.TWITCH_KEY
 	},
-	channels: [ 'notoya_zita' ]
+	channels: [ process.env.CHANNEL ]
 });
 
 client.connect();
