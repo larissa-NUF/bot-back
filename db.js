@@ -1,8 +1,9 @@
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const google = require('./google');
-const uri = "mongodb://bot:yMe8PBQYBtHBEVVc@ac-txjx8wg-shard-00-00.z6swqaz.mongodb.net:27017,ac-txjx8wg-shard-00-01.z6swqaz.mongodb.net:27017,ac-txjx8wg-shard-00-02.z6swqaz.mongodb.net:27017/?ssl=true&replicaSet=atlas-gaunk8-shard-0&authSource=admin&retryWrites=true&w=majority";
+const dotenv = require('dotenv');
+dotenv.config();
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
+const client = new MongoClient(process.env.DB_KEY, {
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,
