@@ -6,7 +6,7 @@ const io = require('socket.io')(server, {cors: {origin: '*'}})
 const db = require('./db');
 const validacao = require('./validacao');
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001;
 
 server.listen(PORT, () => console.log('ok'))
 
