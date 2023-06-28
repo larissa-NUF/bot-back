@@ -1,5 +1,5 @@
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-const google = require('./google');
+
 const dotenv = require('dotenv');
 dotenv.config();
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -27,25 +27,13 @@ const dbName = "botVideo";
 
 
 module.exports = {
-  addVideo: async function (urlVideo, usuario) {
+  addVideo: async function (videoRequest) {
     try {
-      let detalhesVideo = await google.obterDetalhesVideo(urlVideo);
       await client.connect();
       console.log("Connected correctly to server");
       const db = client.db(dbName);
-      // Use the collection "people"
       const col = db.collection("video");
-      // Construct a document                                                                                                                                                              
-      let videoRequest = {
-        "_id": new ObjectId,
-        "url": urlVideo,
-        "usuario": usuario,
-        "titulo": detalhesVideo.data.items[0].snippet.title,
-        "criador": detalhesVideo.data.items[0].snippet.channelTitle
-      }
-      // Insert a single document, wait for promise so we can read it back
       const p = await col.insertOne(videoRequest);
-      // Find one document
       const myDoc = await col.findOne({_id: p.insertedId});
       await client.close();
 
@@ -83,19 +71,32 @@ module.exports = {
 
 
   },
-  deletarVideoPosicao: async function (p) {
+  deletarVideo: async function (_id) {
     try {
-      let n = Number(p)
       await client.connect();
       const db = client.db(dbName);
       const col = db.collection("video");
-      const myDoc = await col.find().limit(n + 1).toArray();
-      await col.deleteOne( myDoc[n] );
+      await col.deleteOne( {"_id": new ObjectId(_id)} );
       
     } catch (err) {
       console.log(err.stack);
     } finally {
       await client.close();
+    }
+
+
+  },
+  existePosicao: async function (n) {
+    try {
+      await client.connect();
+      const db = client.db(dbName);
+      const col = db.collection("video");
+      const myDoc = await col.find().limit(n + 1).toArray();
+      await client.close();
+      return myDoc;
+      
+    } catch (err) {
+      console.log(err.stack);
     }
 
 

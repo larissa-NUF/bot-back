@@ -9,7 +9,6 @@ module.exports = {
             switch (true) {
                 case url.includes("watch?v="):
                     id = url.substr(url.indexOf("watch?v=") + 8)
-                    console.log(id)
                     break;
                 case url.includes("youtu.be"):
                     id = url.substr(url.indexOf("youtu.be/") + 9)
