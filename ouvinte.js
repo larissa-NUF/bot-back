@@ -1,4 +1,5 @@
-const modService = require('./service/comandoService');
+const videoService = require('./service/videoService');
+const comandoService = require('./service/comandoService');
 const tmi = require('tmi.js');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -28,34 +29,47 @@ module.exports = function (io) {
                 let response
 
                 //comando para mod com param
-                if (tags.mod) {
+                if (validacaoMod(tags)) {
                     switch (mensagemItens[0]) {
                         case '!delvideo':
-                            response = await modService.deletarVideo(mensagemItens[1]);
+                            response = await videoService.deletarVideo(mensagemItens[1]);
                             socketOk = "delete";
                             dadosSocket = mensagemItens[1];
                             mensagemChat = "O vídeo na posição #" + mensagemItens[1] + " foi removido da lista de reprodução";
 
+                            break;
+                        case '!promotevideo':
+                            response = await videoService.promoteVideo(mensagemItens[1]);
+                            socketOk = "promote";
+                            dadosSocket = mensagemItens[1];
+                            mensagemChat = "O vídeo na posição #" + mensagemItens[1] + " foi movido para a posição #1 da fila";
                             break;
                     }
                 }
 
                 //comando para user normal com param
                 switch (mensagemItens[0]) {
+                    //TODO ? caso nulo, validação tipo mensagem
                     case '!addvideo':
-                        response = await modService.adicionarVideo(mensagemItens[1], tags['display-name']);
-                        socketOk = "add";
-                        dadosSocket = response;
-                        mensagemChat = response.titulo + " - " + response.criador + ' foi adicionado na lista de reprodução';
+                        response = await videoService.adicionarVideo(mensagemItens[1], tags['display-name']);
+                        if(response?.limite){
+                            mensagemChat = 'Limite por vídeos na lista é 2 por usuário';
+                        }else if (response?.existe){
+                            mensagemChat = response.video.titulo + " - " + response.video.criador + ' já está na playlist';
+                        }else if (response && !response?.existe) {
+                            socketOk = response.video.tocando ? "refreshVideoAtual" : "refreshPlaylist";
+                            mensagemChat = response.video.titulo + " - " + response.video.criador + ' foi adicionado na lista de reprodução';
+                        } 
+
 
                         break;
                 }
                 if (socketOk) io.sockets.emit(socketOk, dadosSocket);
                 if (mensagemChat) client.say(channel, mensagemChat)
             }
-
+            let response
             //comando para mod sem param
-            if (tags.mod) {
+            if (validacaoMod(tags)) {
                 switch (mensagemItens[0]) {
                     case '!skipvideo':
                         io.sockets.emit("skip");
@@ -69,7 +83,13 @@ module.exports = function (io) {
                     client.say(channel, 'Confira a lista de requisição de vídeos aqui ' + process.env.URL_FRONT)
                     break;
                 case '!tutorial':
-                    client.say(channel, '!addvideo <URL> - adiciona o vídeo da url na lista de reprodução / !delvideo <n> - exclui o vídeo na posição n da lista de reprodução / !videolist - link da página de reprodução de vídeos / !skipvideo - pula o vídeo atual')
+                    //TODO listar todos os comandos
+                    response = await comandoService.obterTudo();
+                    client.say(channel, response)
+                    break;
+                case '!currentvideo':
+                    response = await videoService.obterVideoAtual();
+                    client.say(channel, 'Reproduzindo agora ' + response.titulo + " - " + response.criador)
                     break;
             }
 
@@ -84,8 +104,11 @@ module.exports = function (io) {
             client.say(process.env.CHANNEL, 'Vídeo atual pulado')
         })
     });
-    
+
 
 }
 
-
+function validacaoMod(tags){
+    if(tags.mod || tags['display-name'] == process.env.CHANNEL) return true;
+    return false;
+}
