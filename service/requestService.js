@@ -17,7 +17,12 @@ module.exports = {
                 default:
                     break;
             }
-            return await axios.get(`https://youtube.googleapis.com/youtube/v3/videos?part=snippet&id=${id}&key=${process.env.GOOGLE_KEY}`)
+            if(id.includes('&')){
+                console.log("passou")
+                let limpar = id.split('&')
+                id = limpar[0]
+            }
+            return await axios.get(`https://youtube.googleapis.com/youtube/v3/videos?part=snippet&part=contentDetails&id=${id}&key=${process.env.GOOGLE_KEY}`)
         } catch (error) {
             console.error(error)
         }
