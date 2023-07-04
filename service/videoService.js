@@ -26,6 +26,7 @@ module.exports = {
                 let detalhesVideo = await requestService.obterDetalhesVideo(urlVideo);
                 let videos = await videoRepository.obterByIdUsuario(user);
                 let videoTocando = await videoRepository.obterTocando();
+                console.log(limiteTempoVideo, limiteVideoUsuario, detalhesVideo, videos, videoTocando, "sa")
 
                 let videoRequest = {
                     "id": detalhesVideo.data.items[0].id,
