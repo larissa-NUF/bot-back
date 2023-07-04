@@ -2,7 +2,7 @@ const { initializeApp, cert } = require('firebase-admin/app');
 const { getFirestore } = require('firebase-admin/firestore');
 const dotenv = require('dotenv');
 dotenv.config();
-const { privateKey } = JSON.parse(process.env.private_key);
+const { privateKey } = JSON.parse(process.env.PRIVATE_KEY);
 initializeApp({
     credential: cert({
         "type": "service_account",
