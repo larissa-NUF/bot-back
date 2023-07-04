@@ -44,13 +44,13 @@ module.exports = {
                     limiteTempoVideo: limiteTempoVideo
                 })
                 if (validacao && videos?.length == limiteVideoUsuario.maximo) {
-                    let response = {limite: true}
+                    let response = { limite: true }
                     return response
                 }
                 console.log(validacao)
                 if (validacao && videos?.length <= limiteVideoUsuario.maximo &&
                     detalhesVideo.data.items[0].snippet.liveBroadcastContent != "live") {
-                        console.log("ok")
+                    console.log("ok")
                     let response = await videoRepository.addVideo(videoRequest);
                     return response;
                 }
@@ -118,12 +118,19 @@ function validateYouTubeUrl(url) {
 }
 
 function validarTempo(request) {
-    if (request.dataVideo.includes('H')) return false;
-    let sp = request.dataVideo.substr(2).split('M')
+    try {
+        console.log(request)
+        if (request.dataVideo.includes('H')) return false;
+        let sp = request.dataVideo.substr(2).split('M')
 
-    tempoVideo = dayjs("2000-01-01 00:" + sp[0] + ":" + sp[1].substring(0, sp[1].length - 1)).format('HH:mm:ss')
-    tempoMaximo = dayjs(request.limiteTempoVideo.maximo._seconds * 1000).format('HH:mm:ss')
-    tempoMinimo = dayjs(request.limiteTempoVideo.minimo._seconds * 1000).format('HH:mm:ss')
-    if ((tempoVideo <= tempoMaximo) && (tempoVideo >= tempoMinimo)) return true;
-    return false;
+        tempoVideo = dayjs("2000-01-01 00:" + sp[0] + ":" + sp[1].substring(0, sp[1].length - 1)).format('HH:mm:ss')
+        tempoMaximo = dayjs(request.limiteTempoVideo.maximo._seconds * 1000).format('HH:mm:ss')
+        tempoMinimo = dayjs(request.limiteTempoVideo.minimo._seconds * 1000).format('HH:mm:ss')
+        console.log(tempoVideo, tempoMaximo, tempoMinimo)
+        if ((tempoVideo <= tempoMaximo) && (tempoVideo >= tempoMinimo)) return true;
+        return false;
+    } catch (ex) {
+        console.error(ex)
+    }
+
 }
