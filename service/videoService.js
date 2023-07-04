@@ -26,7 +26,6 @@ module.exports = {
                 let detalhesVideo = await requestService.obterDetalhesVideo(urlVideo);
                 let videos = await videoRepository.obterByIdUsuario(user);
                 let videoTocando = await videoRepository.obterTocando();
-                console.log(limiteTempoVideo, limiteVideoUsuario, detalhesVideo, videos, videoTocando, "sa")
 
                 let videoRequest = {
                     "id": detalhesVideo.data.items[0].id,
@@ -50,6 +49,7 @@ module.exports = {
                 }
                 if (validacao && videos?.length <= limiteVideoUsuario.maximo &&
                     detalhesVideo.data.items[0].snippet.liveBroadcastContent != "live") {
+                        console.log("ok")
                     let response = await videoRepository.addVideo(videoRequest);
                     return response;
                 }

@@ -5,6 +5,7 @@ const video = db.collection('video');
 module.exports = {
   addVideo: async function (videoRequest) {
     try {
+      console.log("passou")
       let response = { video: null, existe: false, limite: false };
       const snapshot = await video.doc(videoRequest.id).get();
       console.log(snapshot)
