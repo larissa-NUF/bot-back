@@ -123,9 +123,9 @@ function validarTempo(request) {
         if (request.dataVideo.includes('H')) return false;
         let sp = request.dataVideo.substr(2).split('M')
 
-        tempoVideo = dayjs("2000-01-01 00:" + sp[0] + ":" + sp[1].substring(0, sp[1].length - 1)).format('HH:mm:ss')
-        tempoMaximo = dayjs(request.limiteTempoVideo.maximo._seconds * 1000).format('HH:mm:ss')
-        tempoMinimo = dayjs(request.limiteTempoVideo.minimo._seconds * 1000).format('HH:mm:ss')
+        tempoVideo = dayjs("2000-01-01 00:" + sp[0] + ":" + sp[1].substring(0, sp[1].length - 1)).format('mm:ss')
+        tempoMaximo = dayjs(request.limiteTempoVideo.maximo._seconds * 1000).format('mm:ss')
+        tempoMinimo = dayjs(request.limiteTempoVideo.minimo._seconds * 1000).format('mm:ss')
         console.log(tempoVideo, tempoMaximo, tempoMinimo)
         if ((tempoVideo <= tempoMaximo) && (tempoVideo >= tempoMinimo)) return true;
         return false;
