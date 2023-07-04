@@ -51,6 +51,7 @@ module.exports = function (io) {
                 switch (mensagemItens[0]) {
                     //TODO ? caso nulo, validação tipo mensagem
                     case '!addvideo':
+                        console.log("s")
                         response = await videoService.adicionarVideo(mensagemItens[1], tags['display-name']);
                         if(response?.limite){
                             mensagemChat = 'Limite por vídeos na lista é 2 por usuário';
@@ -60,7 +61,7 @@ module.exports = function (io) {
                             socketOk = response.video.tocando ? "refreshVideoAtual" : "refreshPlaylist";
                             mensagemChat = response.video.titulo + " - " + response.video.criador + ' foi adicionado na lista de reprodução';
                         } 
-
+                        console.log("ss", mensagemChat)
 
                         break;
                 }
