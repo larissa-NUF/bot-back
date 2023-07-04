@@ -7,6 +7,7 @@ module.exports = {
     try {
       let response = { video: null, existe: false, limite: false };
       const snapshot = await video.doc(videoRequest.id).get();
+      console.log(snapshot)
       if (snapshot.exists) {
         response.existe = true
       } else {
