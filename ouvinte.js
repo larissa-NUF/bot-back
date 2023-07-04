@@ -61,7 +61,7 @@ module.exports = function (io) {
                             socketOk = response.video.tocando ? "refreshVideoAtual" : "refreshPlaylist";
                             mensagemChat = response.video.titulo + " - " + response.video.criador + ' foi adicionado na lista de reprodução';
                         } 
-                        console.log("ss", mensagemChat)
+                        console.log("ss", response)
 
                         break;
                 }
