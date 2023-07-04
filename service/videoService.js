@@ -47,8 +47,7 @@ module.exports = {
                     let response = {limite: true}
                     return response
                 }
-                console.log(validacao && videos?.length <= limiteVideoUsuario.maximo &&
-                    detalhesVideo.data.items[0].snippet.liveBroadcastContent != "live")
+                console.log(validacao)
                 if (validacao && videos?.length <= limiteVideoUsuario.maximo &&
                     detalhesVideo.data.items[0].snippet.liveBroadcastContent != "live") {
                         console.log("ok")
