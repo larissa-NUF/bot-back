@@ -19,14 +19,15 @@ module.exports = function (io) {
 
     client.on('message', async (channel, tags, message, self) => {
         try {
+            
             if (self || !message.startsWith('!')) return;
-
-            let mensagemItens = message.split(' ');
-            if (mensagemItens.length == 2) {
-                let mensagemChat
+            let mensagemChat
                 let socketOk
                 let dadosSocket
                 let response
+            let mensagemItens = message.split(' ');
+            if (mensagemItens.length == 2) {
+                
 
                 //comando para mod com param
                 if (validacaoMod(tags)) {
@@ -53,8 +54,10 @@ module.exports = function (io) {
                     case '!addvideo':
                         console.log("s")
                         response = await videoService.adicionarVideo(mensagemItens[1], tags['display-name']);
-                        if(response?.limite){
+                        if(response?.erroLimite){
                             mensagemChat = 'Limite por vídeos na lista é 2 por usuário';
+                        }else if(response?.erroTempo){
+                            mensagemChat = 'O vídeo pode ter no máximo 20 minutos e no mínimo 1 minuto';
                         }else if (response?.existe){
                             mensagemChat = response.video.titulo + " - " + response.video.criador + ' já está na playlist';
                         }else if (response && !response?.existe) {
@@ -65,15 +68,15 @@ module.exports = function (io) {
 
                         break;
                 }
-                if (socketOk) io.sockets.emit(socketOk, dadosSocket);
-                if (mensagemChat) client.say(channel, mensagemChat)
+                
             }
-            let response
             //comando para mod sem param
             if (validacaoMod(tags)) {
                 switch (mensagemItens[0]) {
                     case '!skipvideo':
-                        io.sockets.emit("skip");
+                        response = 'ok';
+                        socketOk = "skip";
+                        mensagemChat =  "O vídeo reproduzindo atualmente foi pulado"
                         break;
                 }
             }
@@ -81,19 +84,24 @@ module.exports = function (io) {
             //comando para user normal sem param
             switch (mensagemItens[0]) {
                 case '!videolist':
-                    client.say(channel, 'Confira a lista de requisição de vídeos aqui ' + process.env.URL_FRONT)
+                    response = 'ok';
+                    mensagemChat = 'Confira a lista de requisição de vídeos aqui ' + process.env.URL_FRONT
                     break;
                 case '!tutorial':
                     //TODO listar todos os comandos
-                    response = await comandoService.obterTudo();
-                    client.say(channel, response)
+                    //response = await comandoService.obterTudo();
+                    //mensagemChat = response
+                    response = 'ok';
+                    mensagemChat = 'Entenda como usar o bot ' + process.env.URL_FRONT + '/documentacao'
                     break;
+                    
                 case '!currentvideo':
                     response = await videoService.obterVideoAtual();
-                    client.say(channel, 'Reproduzindo agora ' + response.titulo + " - " + response.criador)
+                    mensagemChat = 'Reproduzindo agora ' + response.titulo + " - " + response.criador;
                     break;
             }
-
+            if (response && socketOk) io.sockets.emit(socketOk, dadosSocket);
+            if (response && mensagemChat) client.say(channel,'@' + tags['display-name'] + " → " + mensagemChat)
         } catch (ex) {
             console.error(ex)
         }

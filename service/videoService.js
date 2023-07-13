@@ -2,7 +2,7 @@ const videoRepository = require('../repository/videoRepository');
 const configuracoesRepository = require('../repository/configuracoesRepository');
 const requestService = require('./requestService');
 const dayjs = require("dayjs");
-
+let reg = /^\d+$/;
 module.exports = {
     obterVideoAtual: async function () {
         try {
@@ -35,7 +35,8 @@ module.exports = {
                     "criador": detalhesVideo.data.items[0].snippet.channelTitle,
                     "dataRequisicao": new Date(new Date().toISOString()),
                     "dataPromote": null,
-                    "tocando": videoTocando ? false : true
+                    "tocando": videoTocando ? false : true,
+                    "imagem": detalhesVideo.data.items[0].snippet.thumbnails.medium.url
                 }
                 //TODO arrumar retorno tempo
                 //erro retorno, depois case
@@ -43,11 +44,14 @@ module.exports = {
                     dataVideo: detalhesVideo.data.items[0].contentDetails.duration,
                     limiteTempoVideo: limiteTempoVideo
                 })
-                if (validacao && videos?.length == limiteVideoUsuario.maximo) {
-                    let response = { limite: true }
+                if (!validacao) {
+                    let response = { erroTempo: true }
+                    return response
+                }else if (videos?.length == limiteVideoUsuario.maximo){
+                    let response = { erroLimite: true }
                     return response
                 }
-                console.log(validacao)
+
                 if (validacao && videos?.length <= limiteVideoUsuario.maximo &&
                     detalhesVideo.data.items[0].snippet.liveBroadcastContent != "live") {
                     console.log("ok")
@@ -80,7 +84,7 @@ module.exports = {
         }
     },
     deletarVideo: async function (p) {
-        let posicao = Number(p)
+        let posicao = reg.test(p)? Number(p) : ""
         if (posicao != 0) {
             let existe = await videoRepository.existePosicao(posicao)
             if (existe) {
@@ -93,7 +97,7 @@ module.exports = {
 
     },
     promoteVideo: async function (p) {
-        let posicao = Number(p)
+        let posicao = reg.test(p)? Number(p) : ""
         if (posicao != 0 && posicao != 1) {
             let existe = await videoRepository.existePosicao(posicao)
             if (existe) {
