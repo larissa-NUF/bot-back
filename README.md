@@ -1,5 +1,4 @@
 # Bot aumcebot
-
 # Sobre o projeto
 
 https://bot-front.onrender.com
@@ -13,9 +12,8 @@ O aumcebot é um bot para twitch com o objetivo de criar playlist de vídeos com
 - Web socket (socket.io)
 
 # Como executar o projeto
-
 ## Front end plugin
-Pré-requisitos: Pré-requisitos: Git, Node
+Pré-requisitos: Git, Node
 
 ```bash
 # clonar repositório
