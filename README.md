@@ -17,7 +17,7 @@ O aumcebot é um bot para twitch com o objetivo de criar playlist de vídeos com
 
 # Como executar o projeto
 
-## Front end plugin
+## Front end
 Pré-requisitos: Git, Node
 
 ```bash
