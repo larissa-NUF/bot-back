@@ -96,6 +96,10 @@ module.exports = {
 
 
     },
+    deletarTudo: async function () {
+        return await videoRepository.deletarTudo();
+
+    },
     promoteVideo: async function (p) {
         let posicao = reg.test(p)? Number(p) : ""
         if (posicao != 0 && posicao != 1) {

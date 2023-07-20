@@ -34,6 +34,15 @@ module.exports = {
 
 
   },
+  deletarTudo: async function () {
+    try {
+      let snapshot = await video.get()
+      snapshot.docs.map(async doc => {console.log("a");await doc.ref.delete()});
+      return true;
+    } catch (err) {
+      console.log(err.stack);
+    }
+  },
   deletarVideo: async function (id) {
     try {
       await video.doc(id).delete();
