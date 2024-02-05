@@ -11,7 +11,11 @@ module.exports = {
                     id = url.substr(url.indexOf("watch?v=") + 8)
                     break;
                 case url.includes("youtu.be"):
-                    id = url.substr(url.indexOf("youtu.be/") + 9)
+                    let idFiltrado = url.substr(url.indexOf("youtu.be/") + 9)
+                    if(idFiltrado.includes("?")) 
+                        id = idFiltrado.substr(idFiltrado, idFiltrado.lastIndexOf("?"))
+                    else 
+                        id = idFiltrado
                     break;
 
                 default:
